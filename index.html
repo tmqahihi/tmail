@@ -7,275 +7,662 @@
     <style>
         :root {
             --bg: #020617;
-            --card: #0f172a;
+            --bg-soft: #020617;
+            --card: #020924;
+            --card-soft: #0b1220;
             --accent: #22c55e;
-            --accent-strong: #16a34a;
             --accent-soft: rgba(34, 197, 94, 0.1);
+            --accent-strong: #16a34a;
+            --border: #1f2937;
             --text: #e5e7eb;
-            --muted: #94a3b8;
-            --border: #1e293b;
-            --shadow-soft: 0 18px 40px rgba(0,0,0,0.5);
-            --radius: 16px;
+            --muted: #9ca3af;
+            --radius-lg: 18px;
+            --shadow-soft: 0 18px 40px rgba(0, 0, 0, 0.65);
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
         }
 
         body {
-            font-family: system-ui, sans-serif;
-            background: #020617;
-            margin: 0;
-            padding: 0;
+            font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI",
+                sans-serif;
+            background:
+                radial-gradient(circle at top left, #22c55e11, transparent 55%),
+                radial-gradient(circle at bottom right, #38bdf811, transparent 55%),
+                var(--bg);
             color: var(--text);
+            min-height: 100vh;
         }
 
         .page {
             max-width: 1100px;
-            margin: auto;
-            padding: 20px;
+            margin: 0 auto;
+            padding: 18px 16px 40px;
         }
 
         header {
             display: flex;
-            justify-content: space-between;
             align-items: center;
-            margin-bottom: 25px;
+            justify-content: space-between;
+            margin-bottom: 22px;
+            gap: 16px;
         }
 
-        .logo {
+        .logo-wrap {
             display: flex;
             align-items: center;
             gap: 10px;
         }
 
         .logo-circle {
-            width: 38px;
-            height: 38px;
-            border-radius: 50%;
-            background: linear-gradient(135deg, #22c55e, #16a34a);
+            width: 34px;
+            height: 34px;
+            border-radius: 999px;
+            background: radial-gradient(circle at 30% 30%, #bbf7d0, #16a34a);
             display: flex;
-            justify-content: center;
             align-items: center;
-            font-weight: 800;
+            justify-content: center;
             color: #022c22;
+            font-weight: 800;
+            font-size: 17px;
+            box-shadow: 0 0 0 4px rgba(34, 197, 94, 0.18);
+        }
+
+        .logo-text-main {
+            font-weight: 700;
+            letter-spacing: 0.04em;
+            font-size: 16px;
+        }
+
+        .logo-text-sub {
+            font-size: 11px;
+            color: var(--muted);
+        }
+
+        .pill {
+            border-radius: 999px;
+            border: 1px solid rgba(148, 163, 184, 0.4);
+            padding: 4px 9px;
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            background: linear-gradient(
+                120deg,
+                rgba(15, 23, 42, 0.95),
+                rgba(15, 23, 42, 0.7)
+            );
+            font-size: 12px;
+            color: var(--muted);
+        }
+
+        .pill-dot {
+            width: 8px;
+            height: 8px;
+            border-radius: 999px;
+            background: #22c55e;
+            box-shadow: 0 0 0 4px rgba(34, 197, 94, 0.25);
         }
 
         main {
             display: grid;
-            grid-template-columns: 1.5fr 1fr;
-            gap: 20px;
+            grid-template-columns: minmax(0, 3fr) minmax(0, 2.1fr);
+            gap: 18px;
         }
 
-        @media(max-width: 900px){
-            main { grid-template-columns: 1fr; }
+        @media (max-width: 840px) {
+            main {
+                grid-template-columns: minmax(0, 1fr);
+            }
         }
 
         .card {
-            background: var(--card);
-            padding: 20px;
-            border-radius: var(--radius);
+            border-radius: var(--radius-lg);
+            background: radial-gradient(circle at top left,#0b1120,#020617);
             border: 1px solid var(--border);
             box-shadow: var(--shadow-soft);
+            padding: 18px 18px 16px;
         }
 
-        .title {
-            font-size: 24px;
-            font-weight: 700;
-            margin-bottom: 6px;
+        .card-header {
+            display: flex;
+            flex-direction: column;
+            gap: 6px;
+            margin-bottom: 16px;
         }
 
-        .subtitle {
-            color: var(--muted);
-            font-size: 14px;
-            margin-bottom: 20px;
-        }
-
-        .email-box {
-            background: rgba(255,255,255,0.03);
-            border: 1px solid var(--border);
-            border-radius: 12px;
-            padding: 15px;
-            margin-bottom: 20px;
-        }
-
-        .email-value {
-            font-family: monospace;
-            font-size: 16px;
-        }
-
-        button {
-            padding: 10px 18px;
-            border-radius: 50px;
-            border: none;
-            cursor: pointer;
-            font-size: 14px;
-        }
-
-        .btn-primary {
-            background: var(--accent);
+        .eyebrow {
+            font-size: 11px;
+            text-transform: uppercase;
+            letter-spacing: 0.12em;
+            color: var(--accent);
             font-weight: 600;
         }
 
-        .btn-copy {
-            background: #1e293b;
-            margin-left: 10px;
-            color: white;
-            border: 1px solid #334155;
+        .title {
+            font-size: 20px;
+            font-weight: 700;
+        }
+
+        .subtitle {
+            font-size: 13px;
+            color: var(--muted);
+        }
+
+        .email-box {
+            margin-top: 10px;
+            border-radius: 999px;
+            padding: 4px;
+            background: rgba(15, 23, 42, 0.95);
+            border: 1px solid rgba(148, 163, 184, 0.4);
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+
+        .email-chip-label {
+            font-size: 11px;
+            text-transform: uppercase;
+            letter-spacing: 0.14em;
+            color: var(--muted);
+            padding: 5px 10px;
+            border-radius: 999px;
+            background: rgba(15, 23, 42, 0.9);
+            border: 1px solid rgba(148, 163, 184, 0.5);
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+
+        .email-value-wrap {
+            flex: 1;
+            display: flex;
+            align-items: center;
+            padding: 5px 12px;
+            gap: 8px;
+            min-width: 0;
+        }
+
+        .email-value {
+            font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas,
+                "Liberation Mono", "Courier New", monospace;
+            font-size: 13px;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+
+        .badge-demo {
+            border-radius: 999px;
+            padding: 2px 7px;
+            font-size: 10px;
+            text-transform: uppercase;
+            letter-spacing: 0.1em;
+            border: 1px solid rgba(234, 179, 8, 0.7);
+            color: #facc15;
+            background: rgba(202, 138, 4, 0.08);
+        }
+
+        .actions {
+            display: flex;
+            gap: 8px;
+        }
+
+        .btn {
+            border-radius: 999px;
+            border: none;
+            font-size: 13px;
+            padding: 8px 14px;
+            cursor: pointer;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            background: #111827;
+            color: var(--text);
+            transition: transform 0.12s ease, box-shadow 0.12s ease,
+                background 0.12s ease, border-color 0.12s ease;
+            border: 1px solid rgba(55, 65, 81, 0.75);
+        }
+
+        .btn-primary {
+            background: linear-gradient(135deg, var(--accent), var(--accent-strong));
+            border-color: transparent;
+            color: #022c22;
+            font-weight: 600;
+            box-shadow: 0 16px 30px rgba(22, 163, 74, 0.35);
+        }
+
+        .btn-ghost {
+            background: #020617;
+        }
+
+        .btn:hover {
+            transform: translateY(-1px);
+            box-shadow: 0 14px 30px rgba(15, 23, 42, 0.85);
+            background: #020617;
+            border-color: rgba(148, 163, 184, 0.9);
+        }
+
+        .btn-primary:hover {
+            background: linear-gradient(135deg, #22c55e, #4ade80);
+            transform: translateY(-1px) scale(1.01);
+        }
+
+        .meta-row {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
+            margin-top: 12px;
+            font-size: 11px;
+            color: var(--muted);
+        }
+
+        .meta-item {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            padding: 5px 9px;
+            border-radius: 999px;
+            background: rgba(15, 23, 42, 0.9);
+            border: 1px solid rgba(31, 41, 55, 0.85);
+        }
+
+        .meta-item strong {
+            color: #e5e7eb;
+            font-weight: 600;
+        }
+
+        .inbox-card {
+            border-radius: var(--radius-lg);
+            background: radial-gradient(circle at top left,#020617,#020617);
+            border: 1px solid var(--border);
+            box-shadow: var(--shadow-soft);
+            padding: 14px 14px 12px;
+        }
+
+        .inbox-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 8px;
+        }
+
+        .inbox-title {
+            font-size: 13px;
+            font-weight: 600;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+
+        .inbox-title span.icon {
+            width: 18px;
+            height: 18px;
+            border-radius: 999px;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            background: rgba(34, 197, 94, 0.2);
+            color: #bbf7d0;
+            font-size: 11px;
+        }
+
+        .inbox-counter {
+            font-size: 11px;
+            color: var(--muted);
+        }
+
+        .inbox-list {
+            margin-top: 4px;
+            border-radius: 14px;
+            border: 1px solid rgba(31, 41, 55, 0.9);
+            background: #020617;
+            overflow: hidden;
+            max-height: 320px;
+            overflow-y: auto;
         }
 
         .inbox-empty {
-            font-size: 13px;
+            padding: 16px 14px;
+            font-size: 12px;
             color: var(--muted);
-            padding: 15px;
         }
 
         .msg-item {
-            border-bottom: 1px solid #1e293b;
-            padding: 10px;
+            padding: 9px 11px;
+            border-bottom: 1px solid rgba(31, 41, 55, 0.8);
+            font-size: 12px;
+            display: flex;
+            flex-direction: column;
+            gap: 2px;
             cursor: pointer;
+            background: transparent;
+            transition: background 0.12s ease;
         }
 
-        footer {
-            margin-top: 40px;
-            text-align: center;
-            font-size: 13px;
+        .msg-item:hover {
+            background: rgba(15, 23, 42, 0.8);
+        }
+
+        .msg-top {
+            display: flex;
+            justify-content: space-between;
+            gap: 8px;
+            align-items: center;
+        }
+
+        .msg-from {
+            font-weight: 500;
+            color: #e5e7eb;
+        }
+
+        .msg-subject {
+            font-size: 11px;
             color: var(--muted);
         }
 
+        .msg-time {
+            font-size: 11px;
+            color: var(--muted);
+        }
+
+        .msg-badge {
+            font-size: 10px;
+            border-radius: 999px;
+            padding: 2px 7px;
+            border: 1px solid rgba(56, 189, 248, 0.7);
+            color: #7dd3fc;
+        }
+
+        .msg-body {
+            font-size: 11px;
+            color: #9ca3af;
+            margin-top: 3px;
+        }
+
+        .inbox-footer {
+            margin-top: 7px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            font-size: 11px;
+            color: var(--muted);
+        }
+
+        footer {
+            margin-top: 20px;
+            font-size: 11px;
+            color: var(--muted);
+            text-align: center;
+        }
+
+        footer a {
+            color: #38bdf8;
+            text-decoration: none;
+        }
     </style>
 </head>
 <body>
-
-<div class="page">
-
-    <header>
-        <div class="logo">
-            <div class="logo-circle">MQ</div>
-            <div>
-                <div><b>MinhQuan Mail</b></div>
-                <small>TempMail chạy bằng API 1secmail</small>
+    <div class="page">
+        <header>
+            <div class="logo-wrap">
+                <div class="logo-circle">MQ</div>
+                <div>
+                    <div class="logo-text-main">MinhQuan Mail</div>
+                    <div class="logo-text-sub">TempMail chạy bằng API 1secmail</div>
+                </div>
             </div>
-        </div>
-    </header>
-
-    <main>
-
-        <!-- LEFT SIDE -->
-        <div class="card">
-            <div class="title">Tạo email tạm thời</div>
-            <div class="subtitle">Nhận email thật, dùng để test – không cần server</div>
-
-            <div class="email-box">
-                <div class="email-value" id="emailValue">Đang tạo...</div>
+            <div class="pill">
+                <span class="pill-dot"></span>
+                <span>Hoạt động · Frontend + API (nhận mail thật)</span>
             </div>
+        </header>
 
-            <button class="btn-primary" id="btnGenerate">Tạo email mới</button>
-            <button class="btn-copy" id="btnCopy">Sao chép</button>
+        <main>
+            <!-- Cột trái -->
+            <section class="card">
+                <div class="card-header">
+                    <div class="eyebrow">TEMPMAIL</div>
+                    <div class="title">Tạo email tạm thời để test</div>
+                    <div class="subtitle">
+                        Email được tạo từ API <code>1secmail.com</code>. Phù hợp để test đăng ký tài khoản,
+                        nhận mã xác thực,... Không dùng cho dữ liệu quan trọng.
+                    </div>
+                </div>
 
-            <div style="margin-top:20px;">
-                <div>Thời gian hiện tại:</div>
-                <b id="timeDisplay">--:--:--</b>
-            </div>
-        </div>
+                <div class="email-box">
+                    <div class="email-chip-label">
+                        <span>EMAIL HIỆN TẠI</span>
+                    </div>
+                    <div class="email-value-wrap">
+                        <div class="email-value" id="emailValue">Đang tạo...</div>
+                        <span class="badge-demo">TEMP MAIL</span>
+                    </div>
+                </div>
 
-        <!-- RIGHT SIDE -->
-        <div class="card">
-            <div class="title">Hộp thư</div>
-            <div id="inboxList" class="inbox-empty">Chưa có email nào...</div>
-        </div>
+                <div style="display:flex;justify-content:space-between;align-items:center;margin-top:12px;gap:10px;flex-wrap:wrap;">
+                    <div class="actions">
+                        <button class="btn btn-primary" id="btnGenerate">
+                            🔄 Tạo email mới
+                        </button>
+                        <button class="btn btn-ghost" id="btnCopy">
+                            📋 Sao chép
+                        </button>
+                    </div>
 
-    </main>
+                    <div style="text-align:right;">
+                        <div style="font-size:11px;color:var(--muted);">Thời gian hiện tại (GMT+7)</div>
+                        <div style="font-size:13px;font-weight:500;" id="timeDisplay">
+                            --
+                        </div>
+                    </div>
+                </div>
 
-    <footer>
-        © 2025 MinhQuan Mail – Powered by GitHub Pages + 1secmail API.
-    </footer>
+                <div class="meta-row">
+                    <div class="meta-item">
+                        <strong>Miễn phí</strong>
+                        <span>· GitHub Pages + 1secmail API</span>
+                    </div>
+                    <div class="meta-item">
+                        <strong>Không cần server</strong>
+                        <span>· Toàn bộ chạy trên frontend</span>
+                    </div>
+                </div>
+            </section>
 
-</div>
+            <!-- Cột phải -->
+            <aside class="inbox-card">
+                <div class="inbox-header">
+                    <div class="inbox-title">
+                        <span class="icon">📥</span>
+                        <span>Hộp thư</span>
+                    </div>
+                    <div class="inbox-counter">
+                        <span id="inboxCount">0</span> email
+                    </div>
+                </div>
 
+                <div class="inbox-list" id="inboxList">
+                    <div class="inbox-empty">Chưa có email nào...</div>
+                </div>
 
-<!-- SCRIPT -->
-<script>
-const emailEl = document.getElementById("emailValue");
-const btnGenerate = document.getElementById("btnGenerate");
-const btnCopy = document.getElementById("btnCopy");
-const inboxList = document.getElementById("inboxList");
-const timeDisplay = document.getElementById("timeDisplay");
+                <div class="inbox-footer">
+                    <span>Gửi thử 1 email từ Gmail tới địa chỉ bên trái để test.</span>
+                </div>
+            </aside>
+        </main>
 
-let currentEmail = "";
-let currentLogin = "";
-let currentDomain = "";
+        <footer>
+            © 2025 MinhQuan Mail – Xây bằng GitHub Pages + 1secmail API.
+        </footer>
+    </div>
 
-async function generateEmail(){
-    const res = await fetch("https://www.1secmail.com/api/v1/?action=genRandomMailbox&count=1");
-    const data = await res.json();
-    currentEmail = data[0];
-    emailEl.textContent = currentEmail;
+    <script>
+        const emailEl = document.getElementById("emailValue");
+        const btnGenerate = document.getElementById("btnGenerate");
+        const btnCopy = document.getElementById("btnCopy");
+        const timeDisplay = document.getElementById("timeDisplay");
+        const inboxList = document.getElementById("inboxList");
+        const inboxCount = document.getElementById("inboxCount");
 
-    const [login, domain] = currentEmail.split("@");
-    currentLogin = login;
-    currentDomain = domain;
+        const BASE_URL = "https://www.1secmail.com/api/v1/";
 
-    loadInbox();
-}
+        let currentEmail = "";
+        let currentLogin = "";
+        let currentDomain = "";
+        let inboxTimer = null;
 
-async function loadInbox(){
-    inboxList.innerHTML = "<div class='inbox-empty'>Đang tải...</div>";
+        function updateClock() {
+            const now = new Date();
+            const pad = (n) => String(n).padStart(2, "0");
+            const timeStr =
+                pad(now.getHours()) +
+                ":" +
+                pad(now.getMinutes()) +
+                ":" +
+                pad(now.getSeconds());
+            const dateStr =
+                pad(now.getDate()) +
+                "/" +
+                pad(now.getMonth() + 1) +
+                "/" +
+                now.getFullYear();
+            timeDisplay.textContent = `${timeStr} · ${dateStr}`;
+        }
+        setInterval(updateClock, 1000);
+        updateClock();
 
-    const url = `https://www.1secmail.com/api/v1/?action=getMessages&login=${currentLogin}&domain=${currentDomain}`;
-    const res = await fetch(url);
-    const mails = await res.json();
+        async function apiRequest(params) {
+            const url = new URL(BASE_URL);
+            Object.entries(params).forEach(([k, v]) =>
+                url.searchParams.append(k, v)
+            );
+            const res = await fetch(url.toString());
+            if (!res.ok) throw new Error("API error");
+            return res.json();
+        }
 
-    if(mails.length === 0){
-        inboxList.innerHTML = "<div class='inbox-empty'>Chưa có email nào...</div>";
-        return;
-    }
+        async function generateEmail() {
+            try {
+                emailEl.textContent = "Đang tạo email...";
+                const list = await apiRequest({
+                    action: "genRandomMailbox",
+                    count: 1,
+                });
+                const email = Array.isArray(list) ? list[0] : String(list);
+                currentEmail = email;
+                const [login, domain] = email.split("@");
+                currentLogin = login;
+                currentDomain = domain;
 
-    inboxList.innerHTML = "";
+                emailEl.textContent = email;
 
-    mails.reverse().forEach(mail=>{
-        const div = document.createElement("div");
-        div.className = "msg-item";
-        div.innerHTML = `
-            <b>${mail.from}</b><br>
-            <small>${mail.subject}</small><br>
-            <small>${mail.date}</small>
-        `;
-        div.onclick = ()=> readMail(mail.id);
-        inboxList.appendChild(div);
-    });
-}
+                if (inboxTimer) clearInterval(inboxTimer);
+                await loadInbox();
+                inboxTimer = setInterval(loadInbox, 5000);
+            } catch (e) {
+                console.error(e);
+                emailEl.textContent = "Lỗi tạo email, thử lại...";
+            }
+        }
 
-async function readMail(id){
-    const url = `https://www.1secmail.com/api/v1/?action=readMessage&login=${currentLogin}&domain=${currentDomain}&id=${id}`;
-    const res = await fetch(url);
-    const mail = await res.json();
+        async function loadInbox() {
+            if (!currentLogin || !currentDomain) return;
+            try {
+                const messages = await apiRequest({
+                    action: "getMessages",
+                    login: currentLogin,
+                    domain: currentDomain,
+                });
 
-    alert(
-        "Từ: " + mail.from + "\n" +
-        "Chủ đề: " + mail.subject + "\n\n" +
-        (mail.textBody || mail.body || "Không có nội dung.")
-    );
-}
+                renderInbox(Array.isArray(messages) ? messages : []);
+            } catch (e) {
+                console.error(e);
+            }
+        }
 
-btnCopy.onclick = () => {
-    navigator.clipboard.writeText(currentEmail);
-    alert("Đã sao chép email!");
-};
+        async function readMessage(id) {
+            try {
+                const msg = await apiRequest({
+                    action: "readMessage",
+                    login: currentLogin,
+                    domain: currentDomain,
+                    id: id,
+                });
+                if (!msg) return;
+                alert(
+                    "Từ: " +
+                        msg.from +
+                        "\nChủ đề: " +
+                        msg.subject +
+                        "\n\n" +
+                        (msg.textBody || msg.body || "[Không có nội dung]")
+                );
+            } catch (e) {
+                console.error(e);
+            }
+        }
 
-btnGenerate.onclick = generateEmail;
+        function renderInbox(items) {
+            inboxList.innerHTML = "";
+            inboxCount.textContent = items.length;
 
-// Auto clock
-setInterval(()=>{
-    const d = new Date();
-    timeDisplay.textContent = 
-        d.getHours().toString().padStart(2,"0") + ":" +
-        d.getMinutes().toString().padStart(2,"0") + ":" +
-        d.getSeconds().toString().padStart(2,"0");
-}, 1000);
+            if (!items.length) {
+                inboxList.innerHTML =
+                    '<div class="inbox-empty">Chưa có email nào. Gửi thử 1 mail tới địa chỉ bên trái rồi đợi vài giây.</div>';
+                return;
+            }
 
-// AUTO LOAD MAIL EVERY 5s
-setInterval(loadInbox, 5000);
+            items
+                .slice()
+                .reverse()
+                .forEach((m) => {
+                    const div = document.createElement("div");
+                    div.className = "msg-item";
+                    div.innerHTML = `
+                        <div class="msg-top">
+                            <div>
+                                <div class="msg-from">${m.from}</div>
+                                <div class="msg-subject">${m.subject || "(Không có chủ đề)"}</div>
+                            </div>
+                            <div style="text-align:right;display:flex;flex-direction:column;gap:4px;align-items:flex-end;">
+                                <div class="msg-time">${m.date || ""}</div>
+                                <div class="msg-badge">INBOX</div>
+                            </div>
+                        </div>
+                    `;
+                    div.addEventListener("click", () => readMessage(m.id));
+                    inboxList.appendChild(div);
+                });
+        }
 
-// INIT
-generateEmail();
-</script>
+        async function copyEmail() {
+            if (!currentEmail) return;
+            try {
+                if (navigator.clipboard?.writeText) {
+                    await navigator.clipboard.writeText(currentEmail);
+                    alert("Đã sao chép email: " + currentEmail);
+                } else {
+                    const temp = document.createElement("textarea");
+                    temp.value = currentEmail;
+                    document.body.appendChild(temp);
+                    temp.select();
+                    document.execCommand("copy");
+                    document.body.removeChild(temp);
+                    alert("Đã sao chép email");
+                }
+            } catch (e) {
+                alert("Không sao chép được, copy tay giúp mình nhé!");
+            }
+        }
 
+        btnGenerate.addEventListener("click", generateEmail);
+        btnCopy.addEventListener("click", copyEmail);
+
+        // tạo email lần đầu
+        generateEmail();
+    </script>
 </body>
 </html>
