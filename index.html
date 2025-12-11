@@ -1,179 +1,281 @@
-    <script>
-        const emailEl = document.getElementById("emailValue");
-        const btnGenerate = document.getElementById("btnGenerate");
-        const btnCopy = document.getElementById("btnCopy");
-        const timeDisplay = document.getElementById("timeDisplay");
-        const inboxList = document.getElementById("inboxList");
-        const inboxCount = document.getElementById("inboxCount");
-        const toast = document.getElementById("toast");
-        const yearSpan = document.getElementById("yearSpan");
-
-        const BASE_URL = "https://www.1secmail.com/api/v1/";
-
-        let currentEmail = null;
-        let currentLogin = null;
-        let currentDomain = null;
-        let inboxTimer = null;
-
-        yearSpan.textContent = new Date().getFullYear();
-
-        function updateClock() {
-            const now = new Date();
-            const pad = (n) => String(n).padStart(2, "0");
-            const timeStr =
-                pad(now.getHours()) +
-                ":" +
-                pad(now.getMinutes()) +
-                ":" +
-                pad(now.getSeconds());
-            const dateStr =
-                pad(now.getDate()) +
-                "/" +
-                pad(now.getMonth() + 1) +
-                "/" +
-                now.getFullYear();
-            timeDisplay.textContent = `${timeStr} · ${dateStr}`;
-        }
-        setInterval(updateClock, 1000);
-        updateClock();
-
-        function showToast(msg = "Email đã được sao chép vào clipboard!") {
-            if (msg) {
-                toast.querySelector("div:last-child").textContent = msg;
-            }
-            toast.classList.add("show");
-            setTimeout(() => toast.classList.remove("show"), 2000);
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8" />
+    <title>MinhQuan Mail - TempMail</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <style>
+        :root {
+            --bg: #020617;
+            --card: #0f172a;
+            --accent: #22c55e;
+            --accent-strong: #16a34a;
+            --accent-soft: rgba(34, 197, 94, 0.1);
+            --text: #e5e7eb;
+            --muted: #94a3b8;
+            --border: #1e293b;
+            --shadow-soft: 0 18px 40px rgba(0,0,0,0.5);
+            --radius: 16px;
         }
 
-        async function copyEmail() {
-            if (!currentEmail) return;
-            try {
-                if (navigator.clipboard?.writeText) {
-                    await navigator.clipboard.writeText(currentEmail);
-                } else {
-                    const temp = document.createElement("textarea");
-                    temp.value = currentEmail;
-                    document.body.appendChild(temp);
-                    temp.select();
-                    document.execCommand("copy");
-                    document.body.removeChild(temp);
-                }
-                showToast();
-            } catch (e) {
-                alert("Không sao chép được, bạn copy tay giúp mình nhé!");
-            }
+        body {
+            font-family: system-ui, sans-serif;
+            background: #020617;
+            margin: 0;
+            padding: 0;
+            color: var(--text);
         }
 
-        async function apiRequest(params) {
-            const url = new URL(BASE_URL);
-            Object.entries(params).forEach(([k, v]) =>
-                url.searchParams.append(k, v)
-            );
-            const res = await fetch(url.toString());
-            if (!res.ok) throw new Error("API error");
-            return res.json();
+        .page {
+            max-width: 1100px;
+            margin: auto;
+            padding: 20px;
         }
 
-        async function generateEmail() {
-            try {
-                // Tạo 1 email random
-                const list = await apiRequest({
-                    action: "genRandomMailbox",
-                    count: 1,
-                });
-                const email = Array.isArray(list) ? list[0] : String(list);
-                currentEmail = email;
-                const [login, domain] = email.split("@");
-                currentLogin = login;
-                currentDomain = domain;
-
-                emailEl.textContent = email;
-
-                // Reset inbox & bắt đầu reload
-                renderInbox([]);
-                if (inboxTimer) clearInterval(inboxTimer);
-                await loadInbox();
-                inboxTimer = setInterval(loadInbox, 5000);
-            } catch (e) {
-                console.error(e);
-                showToast("Lỗi tạo email, thử lại sau.");
-            }
+        header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 25px;
         }
 
-        async function loadInbox() {
-            if (!currentLogin || !currentDomain) return;
-            try {
-                const messages = await apiRequest({
-                    action: "getMessages",
-                    login: currentLogin,
-                    domain: currentDomain,
-                });
-                renderInbox(Array.isArray(messages) ? messages : []);
-            } catch (e) {
-                console.error(e);
-            }
+        .logo {
+            display: flex;
+            align-items: center;
+            gap: 10px;
         }
 
-        async function readMessage(id) {
-            try {
-                const msg = await apiRequest({
-                    action: "readMessage",
-                    login: currentLogin,
-                    domain: currentDomain,
-                    id: id,
-                });
-                if (!msg) return;
-                alert(
-                    "Từ: " +
-                        msg.from +
-                        "\nChủ đề: " +
-                        msg.subject +
-                        "\n\n" +
-                        (msg.textBody || msg.body || "[Không có nội dung]")
-                );
-            } catch (e) {
-                console.error(e);
-            }
+        .logo-circle {
+            width: 38px;
+            height: 38px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, #22c55e, #16a34a);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            font-weight: 800;
+            color: #022c22;
         }
 
-        function renderInbox(items) {
-            inboxList.innerHTML = "";
-            inboxCount.textContent = items.length;
+        main {
+            display: grid;
+            grid-template-columns: 1.5fr 1fr;
+            gap: 20px;
+        }
 
-            if (!items.length) {
-                inboxList.innerHTML =
-                    '<div class="inbox-empty">Chưa có email nào. Gửi thử 1 mail đến địa chỉ ở bên trái rồi bấm lại "Tạo email mới" hoặc chờ 5 giây để reload.</div>';
-                return;
-            }
+        @media(max-width: 900px){
+            main { grid-template-columns: 1fr; }
+        }
 
-            items
-                .slice()
-                .reverse()
-                .forEach((m) => {
-                    const div = document.createElement("div");
-                    div.className = "msg-item";
-                    div.innerHTML = `
-            <div class="msg-top">
-              <div>
-                <div class="msg-from">${m.from}</div>
-                <div class="msg-subject">${m.subject || "(Không có chủ đề)"}</div>
-              </div>
-              <div style="text-align:right;display:flex;flex-direction:column;gap:4px;align-items:flex-end;">
-                <div class="msg-time">${m.date || ""}</div>
-                <div class="msg-badge">INBOX</div>
-              </div>
+        .card {
+            background: var(--card);
+            padding: 20px;
+            border-radius: var(--radius);
+            border: 1px solid var(--border);
+            box-shadow: var(--shadow-soft);
+        }
+
+        .title {
+            font-size: 24px;
+            font-weight: 700;
+            margin-bottom: 6px;
+        }
+
+        .subtitle {
+            color: var(--muted);
+            font-size: 14px;
+            margin-bottom: 20px;
+        }
+
+        .email-box {
+            background: rgba(255,255,255,0.03);
+            border: 1px solid var(--border);
+            border-radius: 12px;
+            padding: 15px;
+            margin-bottom: 20px;
+        }
+
+        .email-value {
+            font-family: monospace;
+            font-size: 16px;
+        }
+
+        button {
+            padding: 10px 18px;
+            border-radius: 50px;
+            border: none;
+            cursor: pointer;
+            font-size: 14px;
+        }
+
+        .btn-primary {
+            background: var(--accent);
+            font-weight: 600;
+        }
+
+        .btn-copy {
+            background: #1e293b;
+            margin-left: 10px;
+            color: white;
+            border: 1px solid #334155;
+        }
+
+        .inbox-empty {
+            font-size: 13px;
+            color: var(--muted);
+            padding: 15px;
+        }
+
+        .msg-item {
+            border-bottom: 1px solid #1e293b;
+            padding: 10px;
+            cursor: pointer;
+        }
+
+        footer {
+            margin-top: 40px;
+            text-align: center;
+            font-size: 13px;
+            color: var(--muted);
+        }
+
+    </style>
+</head>
+<body>
+
+<div class="page">
+
+    <header>
+        <div class="logo">
+            <div class="logo-circle">MQ</div>
+            <div>
+                <div><b>MinhQuan Mail</b></div>
+                <small>TempMail chạy bằng API 1secmail</small>
             </div>
-          `;
-                    div.addEventListener("click", () => readMessage(m.id));
-                    inboxList.appendChild(div);
-                });
-        }
+        </div>
+    </header>
 
-        btnGenerate.addEventListener("click", generateEmail);
-        btnCopy.addEventListener("click", copyEmail);
+    <main>
 
-        // Tự tạo 1 email khi mở trang
-        generateEmail();
-    </script>
+        <!-- LEFT SIDE -->
+        <div class="card">
+            <div class="title">Tạo email tạm thời</div>
+            <div class="subtitle">Nhận email thật, dùng để test – không cần server</div>
+
+            <div class="email-box">
+                <div class="email-value" id="emailValue">Đang tạo...</div>
+            </div>
+
+            <button class="btn-primary" id="btnGenerate">Tạo email mới</button>
+            <button class="btn-copy" id="btnCopy">Sao chép</button>
+
+            <div style="margin-top:20px;">
+                <div>Thời gian hiện tại:</div>
+                <b id="timeDisplay">--:--:--</b>
+            </div>
+        </div>
+
+        <!-- RIGHT SIDE -->
+        <div class="card">
+            <div class="title">Hộp thư</div>
+            <div id="inboxList" class="inbox-empty">Chưa có email nào...</div>
+        </div>
+
+    </main>
+
+    <footer>
+        © 2025 MinhQuan Mail – Powered by GitHub Pages + 1secmail API.
+    </footer>
+
+</div>
+
+
+<!-- SCRIPT -->
+<script>
+const emailEl = document.getElementById("emailValue");
+const btnGenerate = document.getElementById("btnGenerate");
+const btnCopy = document.getElementById("btnCopy");
+const inboxList = document.getElementById("inboxList");
+const timeDisplay = document.getElementById("timeDisplay");
+
+let currentEmail = "";
+let currentLogin = "";
+let currentDomain = "";
+
+async function generateEmail(){
+    const res = await fetch("https://www.1secmail.com/api/v1/?action=genRandomMailbox&count=1");
+    const data = await res.json();
+    currentEmail = data[0];
+    emailEl.textContent = currentEmail;
+
+    const [login, domain] = currentEmail.split("@");
+    currentLogin = login;
+    currentDomain = domain;
+
+    loadInbox();
+}
+
+async function loadInbox(){
+    inboxList.innerHTML = "<div class='inbox-empty'>Đang tải...</div>";
+
+    const url = `https://www.1secmail.com/api/v1/?action=getMessages&login=${currentLogin}&domain=${currentDomain}`;
+    const res = await fetch(url);
+    const mails = await res.json();
+
+    if(mails.length === 0){
+        inboxList.innerHTML = "<div class='inbox-empty'>Chưa có email nào...</div>";
+        return;
+    }
+
+    inboxList.innerHTML = "";
+
+    mails.reverse().forEach(mail=>{
+        const div = document.createElement("div");
+        div.className = "msg-item";
+        div.innerHTML = `
+            <b>${mail.from}</b><br>
+            <small>${mail.subject}</small><br>
+            <small>${mail.date}</small>
+        `;
+        div.onclick = ()=> readMail(mail.id);
+        inboxList.appendChild(div);
+    });
+}
+
+async function readMail(id){
+    const url = `https://www.1secmail.com/api/v1/?action=readMessage&login=${currentLogin}&domain=${currentDomain}&id=${id}`;
+    const res = await fetch(url);
+    const mail = await res.json();
+
+    alert(
+        "Từ: " + mail.from + "\n" +
+        "Chủ đề: " + mail.subject + "\n\n" +
+        (mail.textBody || mail.body || "Không có nội dung.")
+    );
+}
+
+btnCopy.onclick = () => {
+    navigator.clipboard.writeText(currentEmail);
+    alert("Đã sao chép email!");
+};
+
+btnGenerate.onclick = generateEmail;
+
+// Auto clock
+setInterval(()=>{
+    const d = new Date();
+    timeDisplay.textContent = 
+        d.getHours().toString().padStart(2,"0") + ":" +
+        d.getMinutes().toString().padStart(2,"0") + ":" +
+        d.getSeconds().toString().padStart(2,"0");
+}, 1000);
+
+// AUTO LOAD MAIL EVERY 5s
+setInterval(loadInbox, 5000);
+
+// INIT
+generateEmail();
+</script>
+
 </body>
 </html>
